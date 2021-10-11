@@ -17,13 +17,13 @@ TIMEOUT = 6
 conf = {
     'bootstrap.servers': 'glider-01.srvs.cloudkafka.com:9094, glider-02.srvs.cloudkafka.com:9094, '
                          'glider-03.srvs.cloudkafka.com:9094',
-    'group.id': "%s-consumer" % '41pfiknb',
+    'group.id': "%s-consumer" % '4dvdu2cf',
     'session.timeout.ms': 6000,
     'default.topic.config': {'auto.offset.reset': 'smallest'},
     'security.protocol': 'SASL_SSL',
     'sasl.mechanisms': 'SCRAM-SHA-256',
-    'sasl.username': '41pfiknb',
-    'sasl.password': '4r-NRj1TnbY-WTt5zVE-zPMhFr8qXFx9'
+    'sasl.username': '4dvdu2cf',
+    'sasl.password': 'uvxlhENboRO3vvBTTHMU5Gq7eADnY2Ea'
 }
 
 
@@ -36,7 +36,7 @@ def report_by_booking(request):
     """
     try:
         auth(request)
-        data = consumer('41pfiknb-payment')
+        data = consumer('4dvdu2cf-payment')
         if len(data) != 0:
             dictOfList = {i: data[i] for i in range(0, len(data))}
             return JsonResponse(dictOfList, status=status.HTTP_200_OK)
@@ -53,7 +53,7 @@ def report_by_users(request):
     """
     try:
         auth(request)
-        data = consumer('41pfiknb-users')
+        data = consumer('4dvdu2cf-users')
         if len(data) != 0:
             dictOfList = {i: data[i] for i in range(0, len(data))}
             return JsonResponse(dictOfList, status=status.HTTP_200_OK)
@@ -72,7 +72,7 @@ def report_by_hotels(request):
     """
     try:
         auth(request)
-        hotels = requests.get("https://hotels-booking-chernov.herokuapp.com/api/v1/booking/static", cookies=request.COOKIES)
+        hotels = requests.get("https://litvinov-booking.herokuapp.com/api/v1/booking/static", cookies=request.COOKIES)
         if hotels.status_code == 200:
             hotels = hotels.content.decode('utf8').replace("'", '"')
             hotels = json.loads(hotels)
