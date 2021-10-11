@@ -70,7 +70,7 @@ def register(request):  #
     """
     POST: {
           "role": "admin", вставляется только при админке или "user"
-          "username": "qwerty",
+          "username": "borislitvinov",
           "name": "Boris",
           "last_name": "Litvinov",
           "email": "boris.litvinov2017@yandex.ru",
