@@ -112,7 +112,7 @@ jobs:
         heroku_api_key: 247a04c4-a068-43ae-958b-24e7af9ab989
         heroku_app_name: litvinov-rating
         heroku_email: boris.litvinov2017@yandex.ru
-        appdir: Report_Service
+        appdir: Rating_Service
 
 
     - name: Migrate Session
