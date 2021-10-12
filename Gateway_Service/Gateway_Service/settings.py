@@ -152,3 +152,4 @@ CORS_ALLOWED_ORIGINS = [
     "https://habr.com",
     # добавить потом
 ]
+
