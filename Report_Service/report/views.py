@@ -25,7 +25,7 @@ TIMEOUT = 6
 conf = {
     'bootstrap.servers': 'glider-01.srvs.cloudkafka.com:9094, glider-02.srvs.cloudkafka.com:9094, '
                          'glider-03.srvs.cloudkafka.com:9094',
-    'group.id': "%s-consumer" % '4dvdu2cf',
+    'group.id': "%s-consumer" % '4dvdu2cf-',
     'session.timeout.ms': 6000,
     'default.topic.config': {'auto.offset.reset': 'smallest'},
     'security.protocol': 'SASL_SSL',
