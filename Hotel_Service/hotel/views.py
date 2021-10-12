@@ -12,6 +12,14 @@ import requests
 import json
 import jwt
 
+#LOYALTY_HOST ="http://localhost:8000" "https://litvinov-loyalty.herokuapp.com"
+#SESSION_HOST ="http://localhost:8001" "https://litvinov-session.herokuapp.com"
+#PAYMENT_HOST = "http://localhost:8002" "https://litvinov-payment.herokuapp.com"
+#BOOKING_HOST = "http://localhost:8003" "https://litvinov-booking.herokuapp.com"
+#HOTEL_HOST = "http://localhost:8004" "https://litvinov-hotel.herokuapp.com"
+#GATEWAY_HOST = "http://localhost:8005" "https://litvinov-gateway.herokuapp.com"
+#REPORT_HOST = "http://localhost:8006" "https://litvinov-report.herokuapp.com"
+
 FAILURES = 3
 TIMEOUT = 6
 

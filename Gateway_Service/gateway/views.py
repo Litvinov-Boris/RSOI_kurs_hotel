@@ -20,6 +20,14 @@ import json
 import jwt
 import re
 
+#LOYALTY_HOST ="http://localhost:8000" "https://litvinov-loyalty.herokuapp.com"
+#SESSION_HOST ="http://localhost:8001" "https://litvinov-session.herokuapp.com"
+#PAYMENT_HOST = "http://localhost:8002" "https://litvinov-payment.herokuapp.com"
+#BOOKING_HOST = "http://localhost:8003" "https://litvinov-booking.herokuapp.com"
+#HOTEL_HOST = "http://localhost:8004" "https://litvinov-hotel.herokuapp.com"
+#GATEWAY_HOST = "http://localhost:8005" "https://litvinov-gateway.herokuapp.com"
+#REPORT_HOST = "http://localhost:8006" "https://litvinov-report.herokuapp.com"
+
 FAILURES = 3
 TIMEOUT = 6
 
@@ -67,12 +75,12 @@ def login(request):  #
 def register(request):  #
     """
     POST: {
-          "role": "admin", вставляется только при админке или "user"
-          "username": "qwerty",
-          "name": "Boris",
-          "last_name": "Litvinov",
-          "email": "boris.litvinov2017@yandex.ru",
-          "password": "qwerty"
+          "role": "",
+          "username": "",
+          "name": "",
+          "last_name": "",
+          "email": "",
+          "password": ""
           }
     """
     session = requests.post("https://litvinov-session.herokuapp.com/api/v1/session/register", json=request.data)
@@ -474,7 +482,7 @@ def index(request):
     _allhotels = requests.get("https://litvinov-hotel.herokuapp.com/api/v1/hotels", cookies=request.COOKIES).json()
 
     if len(_allhotels) != 0:
-        title = "Amazing Sky Hotels"
+        title = "Hotels"
         paginator = Paginator(_allhotels, 10)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
@@ -496,14 +504,10 @@ def make_login(request):
         form = LoginForm()
     if request.method == "POST":
         form = LoginForm(data=request.POST)
-        session = requests.post('https://litvinov-session.herokuapp.com/api/v1/session/login',
+        session = requests.post('https://litvinov-gateway.herokuapp.com/api/v1/login',
                                 json={"username": request.POST.get('username'),
                                       "password": request.POST.get('password')})
         if session.status_code == 200:
-            q_session = session.json()
-            q_session.update({"username": request.POST["username"],
-                              "date": dt.now(tz_MOS).strftime('%Y-%m-%d %H:%M:%S %Z%z')})
-            producer(q_session, '4dvdu2cf-users')
             response = HttpResponseRedirect('/index')
             response.set_cookie(key='jwt', value=session.cookies.get('jwt'), httponly=True)
             return response
@@ -803,7 +807,7 @@ def all_users(request):
         response = HttpResponseRedirect('/index')
         response.set_cookie(key='jwt', value=session.cookies.get('jwt'), httponly=True)
         return response
-    _users = requests.get("https://litvinov-session.herokuapp.com/api/v1/session/users", cookies=request.COOKIES).json()
+    _users = requests.get("https://litvinov-gateway.herokuapp.com/api/v1/users", cookies=request.COOKIES).json()
     response = render(request, 'all_users.html', {'all_users': _users, 'user': data})
     response.set_cookie(key='jwt', value=session.cookies.get('jwt'), httponly=True) \
         if is_authenticated else response.delete_cookie('jwt')
@@ -924,15 +928,7 @@ def all_booking_static(request):
 
 
 def make_logout(request):
-    session = requests.post("https://litvinov-session.herokuapp.com/api/v1/session/logout", cookies=request.COOKIES)
-    if session.status_code != 200:
-        return render(request, 'index.html')
-    user = requests.get(
-        "https://litvinov-session.herokuapp.com/api/v1/session/user/{}".format(session.json()["user_uid"]),
-        cookies=request.COOKIES).json()
-    q_session = {"username": user["username"], "detail": 'Logout',
-                 "date": dt.now(tz_MOS).strftime('%Y-%m-%d %H:%M:%S %Z%z')}
-    producer(q_session, '4dvdu2cf-users')
+    session = requests.get("https://litvinov-gateway.herokuapp.com/api/v1/logout", cookies=request.COOKIES)
     if session.status_code == 200:
         response = HttpResponseRedirect('/index')
         response.delete_cookie('jwt')
@@ -1005,20 +1001,14 @@ def registration(request):
         with open(f'gateway/static/images/avatars/{filename}', 'wb') as image:
             files = request.FILES["avatar"].read()
             image.write(files)
-        session = requests.post('https://litvinov-session.herokuapp.com/api/v1/session/register',
+        session = requests.post('https://litvinov-gateway.herokuapp.com/api/v1/register',
                                 json={"username": form.data['username'], "name": form.data['first_name'],
                                       "last_name": form.data['last_name'], "password": form.data['password'],
                                       "email": form.data['email'], "avatar": f'images/avatars/{filename}'})
+        error = 'success'
         if session.status_code != 200:
             session = session.content.decode('utf8').replace("'", '"')
             error = "email is not unique" if 'email' in session else "username is not unique"
-            return render(request, 'signup.html', {'form': form, 'error': error})
-        session = session.json()["user_uid"]
-        loyalty = requests.post("https://litvinov-loyalty.herokuapp.com/api/v1/loyalty/create", json={"user_uid": session})
-        error = 'Error in loyalty' if loyalty.status_code != 200 else 'success'
-        q_session = {"username": request.POST["username"], "detail": 'Register',
-                     "date": dt.now(tz_MOS).strftime('%Y-%m-%d %H:%M:%S %Z%z')}
-        producer(q_session, '4dvdu2cf-users')
 
     return render(request, 'signup.html', {'form': form, 'error': error})
 

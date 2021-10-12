@@ -1,1 +1,0 @@
-web: gunicorn Session_Service.wsgi --log-file -
