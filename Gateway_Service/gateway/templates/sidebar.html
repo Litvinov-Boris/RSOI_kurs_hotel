@@ -4,7 +4,7 @@
         <form action="{% url 'search' %}" method="POST">
             {% csrf_token %}
             <select  type="hidden" name="city" id="city" class="btn btn-outline-secondary"
-                style="height: 40px; width: 100%; background-color: #f8f9fa; border-color: #dce0e5;">
+                style="height: 40px; width: 100%; background-color: #f8f9fa; border-color: #dce0e5; color: #000000">
                 <option onclick="document.getElementById('city').value='';">Choose city</option>
                 {% for city in cities %}
                     <option onclick="document.getElementById('city').value='{{ city.cities }}';">{{ city.cities }}</option>
